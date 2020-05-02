@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require("axios");
 
 const {
   GraphQLInt,
@@ -6,6 +6,7 @@ const {
   GraphQLList,
   GraphQLString,
   GraphQLSchema,
+  GraphQLNonNull,
 } = require("graphql");
 
 // POST Type
@@ -29,7 +30,6 @@ const RootQuery = new GraphQLObjectType({
         id: { type: GraphQLInt },
       },
       resolve(parentValue, args) {
-
         // Call the REST API using axios. One can use any client for this
         return axios
           .get("https://jsonplaceholder.typicode.com/posts/" + args.id)
@@ -39,7 +39,35 @@ const RootQuery = new GraphQLObjectType({
     posts: {
       type: new GraphQLList(PostType),
       resolve(parentValue, args) {
-        return posts;
+        return axios
+          .get("https://jsonplaceholder.typicode.com/posts/")
+          .then((res) => res.data);
+      },
+    },
+  },
+});
+
+const mutation = new GraphQLObjectType({
+  name: "Mutation",
+  fields: {
+    addPost: {
+      type: PostType,
+      args: {
+        userId: { type: new GraphQLNonNull(GraphQLInt) },
+        title: { type: new GraphQLNonNull(GraphQLString) },
+        body: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      resolve(parentValue, args) {
+        //POST the data
+        return axios
+          .post("https://jsonplaceholder.typicode.com/posts/",
+            {
+                "userId": args.id,
+                "title": args.title,
+                "body": args.body
+            }
+          )
+          .then((res) => res.data);
       },
     },
   },
@@ -47,4 +75,5 @@ const RootQuery = new GraphQLObjectType({
 
 module.exports = new GraphQLSchema({
   query: RootQuery,
+  mutation : mutation
 });
