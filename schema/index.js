@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 const {
   GraphQLInt,
   GraphQLObjectType,
@@ -17,25 +19,6 @@ const PostType = new GraphQLObjectType({
   }),
 });
 
-// Hard coded posts list
-const posts = [
-  {
-    userId: 1,
-    id: 1,
-    title:
-      "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-    body:
-      "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto",
-  },
-  {
-    userId: 1,
-    id: 2,
-    title: "qui est esse",
-    body:
-      "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla",
-  },
-];
-
 // Root Query
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -46,11 +29,11 @@ const RootQuery = new GraphQLObjectType({
         id: { type: GraphQLInt },
       },
       resolve(parentValue, args) {
-        for (let i = 0; i < posts.length; i++) {
-          if (posts[i].id == args.id) {
-            return posts[i];
-          }
-        }
+
+        // Call the REST API using axios. One can use any client for this
+        return axios
+          .get("https://jsonplaceholder.typicode.com/posts/" + args.id)
+          .then((res) => res.data);
       },
     },
     posts: {
