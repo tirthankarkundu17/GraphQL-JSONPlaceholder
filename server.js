@@ -6,7 +6,7 @@ const graphqlHTTP = require("express-graphql"); // import express-graphql for th
 
 const postSchema = require("./schema"); // import the schema
 
-const PORT = 3000; // Hard coded port on which the server will run
+const PORT = process.env.PORT || 3000; // Hard coded port on which the server will run
 
 app.listen(PORT, () => {
   console.log(`Server is up on ${PORT}`);
