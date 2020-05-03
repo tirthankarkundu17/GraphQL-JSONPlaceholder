@@ -1,4 +1,5 @@
 # GraphQL-JSONPlaceholder
 A GraphQL Runtime for JSONPlaceholder
 
-Added JSONPlaceholder implementation with axios.
+Added JSONPlaceholder implementation for GET, POST, PATCH, DELETE.
+Used axios for network calls.

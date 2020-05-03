@@ -60,14 +60,42 @@ const mutation = new GraphQLObjectType({
       resolve(parentValue, args) {
         //POST the data
         return axios
-          .post("https://jsonplaceholder.typicode.com/posts/",
-            {
-                "userId": args.id,
-                "title": args.title,
-                "body": args.body
-            }
-          )
+          .post("https://jsonplaceholder.typicode.com/posts/", {
+            userId: args.id,
+            title: args.title,
+            body: args.body,
+          })
+          .then((res) =>{ return res.data});
+      },
+    },
+    deletePost: {
+      type: PostType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+      },
+      resolve(parentValue, args) {
+        //POST the data
+        return axios
+          .delete("https://jsonplaceholder.typicode.com/posts/" + args.id)
           .then((res) => res.data);
+      },
+    },
+    editPost: {
+      type: PostType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+        userId: { type: GraphQLInt },
+        title: { type: GraphQLString },
+        body: { type: GraphQLString },
+      },
+      resolve(parentValue, args) {
+        //POST the data
+        return axios
+          .patch("https://jsonplaceholder.typicode.com/posts/" + args.id , args)
+          .then((res) => {
+            console.log(res.data);
+            return res.data
+          });
       },
     },
   },
@@ -75,5 +103,5 @@ const mutation = new GraphQLObjectType({
 
 module.exports = new GraphQLSchema({
   query: RootQuery,
-  mutation : mutation
+  mutation: mutation,
 });
